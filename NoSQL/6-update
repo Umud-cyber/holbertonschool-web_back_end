@@ -1,2 +1,7 @@
-// Deletes all documents with name="Holberton school" in the collection school
-db.school.remove({ name: "Holberton school" })
+#!/usr/bin/env bash
+# Adds new attribute "address" to all documents where name="Holberton school"
+mongo "$1" --quiet --eval 'db.school.updateMany(
+  { name: "Holberton school" },
+  { $set: { address: "972 Mission street" } }
+)'
+
