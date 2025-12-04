@@ -1,3 +1,4 @@
+// Deletes all documents with name="Holberton school" in the collection school
 #!/usr/bin/env bash
 # Adds new attribute "address" to all documents where name="Holberton school"
 mongo "$1" --quiet --eval 'db.school.updateMany(
