@@ -1,41 +1,40 @@
 #!/usr/bin/env python3
 """
-this module provides stats about Nginx logs stored in MongoDB.
-it connects to the logs database and analyzes the nginx collection.
+Script that provides some stats about Nginx logs stored in MongoDB
+Database: logs, Collection: nginx
 """
 from pymongo import MongoClient
 
 
 def log_stats():
     """
-    calculates and prints statistics about the Nginx logs.
+    Provides some stats about Nginx logs stored in MongoDB.
     """
-    # connect to the MongoDB server
+    # Connect to default MongoDB client
     client = MongoClient('mongodb://127.0.0.1:27017')
+    
+    # Select the database and collection
+    db = client.logs
+    collection = db.nginx
 
-    # select the database and collection
-    nginx_collection = client.logs.nginx
-
-    # get the total number of documents
-    total_logs = nginx_collection.count_documents({})
+    # 1. Count total number of documents
+    total_logs = collection.count_documents({})
     print(f"{total_logs} logs")
 
-    # calculate stats for specific HTTP methods
+    # 2. Display methods statistics
     print("Methods:")
     methods = ["GET", "POST", "PUT", "PATCH", "DELETE"]
-
+    
     for method in methods:
-        # count documents where the field 'method' matches the current method
-        count = nginx_collection.count_documents({"method": method})
-        # the requirement specifies a tabulation (\t) before the method name
+        # Count documents for each specific method
+        count = collection.count_documents({"method": method})
         print(f"\tmethod {method}: {count}")
 
-    # get the count of status checks
-    # it filters for method="GET" AND path="/status"
-    status_check = nginx_collection.count_documents(
+    # 3. Count status checks (method=GET, path=/status)
+    status_check_count = collection.count_documents(
         {"method": "GET", "path": "/status"}
     )
-    print(f"{status_check} status check")
+    print(f"{status_check_count} status check")
 
 
 if __name__ == "__main__":
