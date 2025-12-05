@@ -1,40 +1,41 @@
-#!/usr/bin/env python3
+i#!/usr/bin/env python3
 """
-Script that provides some stats about Nginx logs stored in MongoDB
-Database: logs, Collection: nginx
+this module provides stats about Nginx logs stored in MongoDB.
+it connects to the logs database and analyzes the nginx collection.
 """
 from pymongo import MongoClient
 
 
 def log_stats():
     """
-    Provides some stats about Nginx logs stored in MongoDB.
+    calculates and prints statistics about the Nginx logs.
     """
-    # Connect to default MongoDB client
+    # connect to the MongoDB server
     client = MongoClient('mongodb://127.0.0.1:27017')
-    
-    # Select the database and collection
-    db = client.logs
-    collection = db.nginx
 
-    # 1. Count total number of documents
-    total_logs = collection.count_documents({})
+    # select the database and collection
+    nginx_collection = client.logs.nginx
+
+    # get the total number of documents
+    total_logs = nginx_collection.count_documents({})
     print(f"{total_logs} logs")
 
-    # 2. Display methods statistics
+    # calculate stats for specific HTTP methods
     print("Methods:")
     methods = ["GET", "POST", "PUT", "PATCH", "DELETE"]
-    
+
     for method in methods:
-        # Count documents for each specific method
-        count = collection.count_documents({"method": method})
+        # count documents where the field 'method' matches the current method
+        count = nginx_collection.count_documents({"method": method})
+        # the requirement specifies a tabulation (\t) before the method name
         print(f"\tmethod {method}: {count}")
 
-    # 3. Count status checks (method=GET, path=/status)
-    status_check_count = collection.count_documents(
+    # get the count of status checks
+    # it filters for method="GET" AND path="/status"
+    status_check = nginx_collection.count_documents(
         {"method": "GET", "path": "/status"}
     )
-    print(f"{status_check_count} status check")
+    print(f"{status_check} status check")
 
 
 if __name__ == "__main__":
