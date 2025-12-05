@@ -1,4 +1,4 @@
-i#!/usr/bin/env python3
+#!/usr/bin/env python3
 """
 this module provides stats about Nginx logs stored in MongoDB.
 it connects to the logs database and analyzes the nginx collection.
